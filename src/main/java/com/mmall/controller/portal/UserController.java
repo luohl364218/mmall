@@ -118,4 +118,28 @@ public class UserController {
         }
         return iUserService.resetPassword(user, passwordOld, passwordNew);
     }
+
+    /**  
+     * 更新用户信息
+     * @author heylinlook 
+     * @date 2018/4/5 14:15  
+     * @param   
+     * @return   
+     */ 
+    @RequestMapping(value = "update_information.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<User> updateInformation(HttpSession session, User user) {
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorMsg(Const.USER_NO_LOGIN);
+        }
+        //防止越权
+        user.setId(currentUser.getId());
+        ServerResponse response = iUserService.updateInformation(user);
+        if (response.isSuccessful()) {
+            //更新成功，把更新后的User放入session
+            session.setAttribute(Const.CURRENT_USER, response.getData());
+        }
+        return response;
+    }
 }

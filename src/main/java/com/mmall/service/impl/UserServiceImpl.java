@@ -154,4 +154,26 @@ public class UserServiceImpl implements IUserService {
         }
         return ServerResponse.createByErrorMsg(Const.PWD_RESET_FAILED);
     }
+
+    public ServerResponse<User> updateInformation(User user) {
+        //username不能更新
+        //检查email是否已经被其他用户使用
+        int result = mUserMapper.checkEmailByUserId(user.getId(), user.getEmail());
+        if(result > 0) {
+            return ServerResponse.createByErrorMsg(Const.EMAIL_EXIST);
+        }
+
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setAnswer(user.getAnswer());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setQuestion(user.getQuestion());
+
+        result = mUserMapper.updateByPrimaryKeySelective(updateUser);
+        if(result > 0) {
+            return ServerResponse.createBySuccess(Const.UPDATE_USER_SUCCESS, updateUser);
+        }
+        return ServerResponse.createByErrorMsg(Const.UPDATE_USER_FAILED);
+    }
 }

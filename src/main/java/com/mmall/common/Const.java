@@ -1,5 +1,7 @@
 package com.mmall.common;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Const {
 
     public static final String CURRENT_USER = "currentUser";
@@ -21,6 +23,9 @@ public class Const {
     public static final String TOKEN_ERR = "token错误，请重新获取";
     public static final String PWD_RESET_SUCCESS = "密码修改成功";
     public static final String PWD_RESET_FAILED = "密码修改失败";
+    public static final String UPDATE_USER_SUCCESS = "更新用户信息成功";
+    public static final String UPDATE_USER_FAILED = "更新用户信息失败";
+
 
     public static final String USERNAME_TYPE = "username";
     public static final String EMAIL_TYPE = "email";
