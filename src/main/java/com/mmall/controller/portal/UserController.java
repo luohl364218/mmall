@@ -61,15 +61,44 @@ public class UserController {
         }
     }
 
+    /**  
+     * 获取用户密保问题
+     * @author heylinlook 
+     * @date 2018/4/5 11:11  
+     * @param   
+     * @return 如果有密保问题则返回，没有则返回提示
+     */ 
     @RequestMapping(value = "forget_get_question.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String username) {
         return iUserService.selectQuestion(username);
     }
 
+    /**  
+     * 忘记密码后回答问题校验
+     * @author heylinlook
+     * @date 2018/4/5 11:09  
+     * @param   
+     * @return  如果问题与答案匹配，则返回token，用于密码重置；如果不匹配则返回错误信息
+     */ 
     @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
         return iUserService.checkAnswer(username, question, answer);
+    }
+
+    /**  
+     * 忘记密码时的重置密码
+     * @author heylinlook 
+     * @date 2018/4/5 11:01
+     * @param   username
+     * @param  passwordNew
+     * @param token
+     * @return   
+     */ 
+    @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String token) {
+        return iUserService.forgetResetPassword(username, passwordNew, token);
     }
 }

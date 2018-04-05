@@ -108,5 +108,34 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMsg(Const.ANSWER_WRONG);
     }
 
-
+    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String token) {
+        //校验一下username
+        ServerResponse valid = this.checkValid(username, Const.USERNAME_TYPE);
+        if(valid.isSuccessful()) {
+            //用户名不存在
+            return ServerResponse.createByErrorMsg(Const.USER_NO_EXIST);
+        }
+        //判断传入token是否为空
+        if(StringUtils.isBlank(token)) {
+            return ServerResponse.createByErrorMsg(Const.TOKEN_EMPTY);
+        }
+        //获取缓存token
+        String tokenCache = TokenCache.getKey(Const.TOKEN_KEY_PREFIX + username);
+        //判断缓存值是否为空
+        if (StringUtils.isBlank(tokenCache)){
+            return ServerResponse.createByErrorMsg(Const.TOKEN_EXPIRED);
+        }
+        //判断token是否匹配
+        if(!StringUtils.equals(token, tokenCache)) {
+            return ServerResponse.createByErrorMsg(Const.TOKEN_ERR);
+        }
+        //更新密码
+        String passwordMD5 = MD5Util.MD5EncodeUtf8(passwordNew);
+        int rowCount = mUserMapper.updatePasswordByUsername(username, passwordMD5);
+        if (rowCount > 0) {
+            //生效行数大于0即更新成功
+            return ServerResponse.createBySuccessMessage(Const.PWD_RESET_SUCCESS);
+        }
+        return ServerResponse.createByErrorMsg(Const.PWD_RESET_FAILED);
+    }
 }
