@@ -90,15 +90,32 @@ public class UserController {
     /**  
      * 忘记密码时的重置密码
      * @author heylinlook 
-     * @date 2018/4/5 11:01
+     * @date 2018/4/5 11:52
      * @param   username
      * @param  passwordNew
      * @param token
-     * @return   
+     * @return
      */ 
-    @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
+    @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String token) {
         return iUserService.forgetResetPassword(username, passwordNew, token);
+    }
+
+    /**  
+     * 登录后的重置密码
+     * @author heylinlook
+     * @date 2018/4/5 11:53  
+     * @param   
+     * @return   
+     */ 
+    @RequestMapping(value = "reset_password.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String>  resetPassword(HttpSession session, String passwordOld,String passwordNew) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorMsg(Const.USER_NO_LOGIN);
+        }
+        return iUserService.resetPassword(user, passwordOld, passwordNew);
     }
 }
