@@ -36,7 +36,7 @@ public class UserController {
     @ResponseBody
     public ServerResponse<String> logout(HttpSession session) {
         session.removeAttribute(Const.CURRENT_USER);
-        return ServerResponse.createBySuccess(Const.LOGOUT_SUCCESS);
+        return ServerResponse.createBySuccess();
     }
 
     @RequestMapping(value = "register.do", method = RequestMethod.POST)
@@ -94,13 +94,13 @@ public class UserController {
      * @date 2018/4/5 11:52
      * @param   username
      * @param  passwordNew
-     * @param token
+     * @param forgetToken
      * @return
      */ 
     @RequestMapping(value = "forget_reset_password.do", method = RequestMethod.POST)
     @ResponseBody
-    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String token) {
-        return iUserService.forgetResetPassword(username, passwordNew, token);
+    public ServerResponse<String> forgetResetPassword(String username, String passwordNew, String forgetToken) {
+        return iUserService.forgetResetPassword(username, passwordNew, forgetToken);
     }
 
     /**  
@@ -136,9 +136,11 @@ public class UserController {
         }
         //防止越权
         user.setId(currentUser.getId());
-        ServerResponse response = iUserService.updateInformation(user);
+        user.setUsername(currentUser.getUsername());
+        ServerResponse<User> response = iUserService.updateInformation(user);
         if (response.isSuccessful()) {
-            //更新成功，把更新后的User放入session
+            //更新成功，把更新后的User放入session,response不含username，需要更新
+            response.getData().setUsername(currentUser.getUsername());
             session.setAttribute(Const.CURRENT_USER, response.getData());
         }
         return response;

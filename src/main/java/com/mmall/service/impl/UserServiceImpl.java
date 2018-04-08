@@ -164,6 +164,7 @@ public class UserServiceImpl implements IUserService {
         }
 
         User updateUser = new User();
+        //禁止更新username
         updateUser.setId(user.getId());
         updateUser.setEmail(user.getEmail());
         updateUser.setAnswer(user.getAnswer());
