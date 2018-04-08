@@ -176,4 +176,14 @@ public class UserServiceImpl implements IUserService {
         }
         return ServerResponse.createByErrorMsg(Const.UPDATE_USER_FAILED);
     }
+
+    public ServerResponse<User> getInformation(Integer userId){
+        User user = mUserMapper.selectByPrimaryKey(userId);
+        if (user == null) {
+            return ServerResponse.createByErrorMsg(Const.USER_NO_EXIST);
+        }
+        user.setPassword(StringUtils.EMPTY);
+        return ServerResponse.createBySuccess(user);
+    }
+
 }

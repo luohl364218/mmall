@@ -25,6 +25,7 @@ public class Const {
     public static final String PWD_RESET_FAILED = "密码修改失败";
     public static final String UPDATE_USER_SUCCESS = "更新用户信息成功";
     public static final String UPDATE_USER_FAILED = "更新用户信息失败";
+    public static final String USER_NOT_ADMIN = "不是管理员，无法登录";
 
 
     public static final String USERNAME_TYPE = "username";
