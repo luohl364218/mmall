@@ -25,8 +25,13 @@ public class Const {
     public static final String PWD_RESET_FAILED = "密码修改失败";
     public static final String UPDATE_USER_SUCCESS = "更新用户信息成功";
     public static final String UPDATE_USER_FAILED = "更新用户信息失败";
-    public static final String USER_NOT_ADMIN = "不是管理员，无法登录";
-
+    public static final String USER_NOT_ADMIN = "不是管理员，需要管理员权限";
+    public static final String PARAM_WRONG = "参数错误";
+    public static final String INSERT_SUCCESS = "添加成功";
+    public static final String INSERT_FAILED = "添加失败";
+    public static final String UPDATE_SUCCESS = "更新成功";
+    public static final String UPDATE_FAILED = "更新失败";
+    public static final String CATEGORY_NOT_FIND = "未找到当前分类的子分类";
 
     public static final String USERNAME_TYPE = "username";
     public static final String EMAIL_TYPE = "email";
