@@ -14,14 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service("iCategoryService")
-public class CategoryService implements ICategoryService {
+public class CategoryServiceImpl implements ICategoryService {
 
-    private Logger logger = LoggerFactory.getLogger(CategoryService.class);
+    private Logger logger = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
     @Autowired
     private CategoryMapper categoryMapper;
@@ -38,7 +37,7 @@ public class CategoryService implements ICategoryService {
 
         int rowCount = categoryMapper.insert(category);
         if(rowCount > 0) {
-            return ServerResponse.createBySuccessMessage(Const.INSERT_SUCCESS);
+            return ServerResponse.createBySuccessMsg(Const.INSERT_SUCCESS);
         }
         return ServerResponse.createByErrorMsg(Const.INSERT_FAILED);
     }
@@ -53,7 +52,7 @@ public class CategoryService implements ICategoryService {
         category.setName(categoryName);
         int rowCount = categoryMapper.updateByPrimaryKeySelective(category);
         if(rowCount > 0) {
-            return ServerResponse.createBySuccessMessage(Const.UPDATE_SUCCESS);
+            return ServerResponse.createBySuccessMsg(Const.UPDATE_SUCCESS);
         }
         return ServerResponse.createByErrorMsg(Const.UPDATE_FAILED);
     }

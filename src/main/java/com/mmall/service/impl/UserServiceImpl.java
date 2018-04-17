@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 @Service("iUserService")
@@ -57,7 +56,7 @@ public class UserServiceImpl implements IUserService {
         if (result == 0) {
             return ServerResponse.createByErrorMsg(Const.REGISTER_ERR);
         }
-        return ServerResponse.createBySuccessMessage(Const.REGISTER_SUCCESS);
+        return ServerResponse.createBySuccessMsg(Const.REGISTER_SUCCESS);
     }
 
     @Override
@@ -79,7 +78,7 @@ public class UserServiceImpl implements IUserService {
         } else {
             return ServerResponse.createByErrorMsg(Const.CHECK_FAILED);
         }
-        return ServerResponse.createBySuccessMessage(Const.CHECK_SUCCESS);
+        return ServerResponse.createBySuccessMsg(Const.CHECK_SUCCESS);
     }
 
     @Override
@@ -91,7 +90,7 @@ public class UserServiceImpl implements IUserService {
         }
         String question = mUserMapper.selectQuestionByUsername(username);
         if (StringUtils.isNotBlank(question)) {
-            return ServerResponse.createBySuccessMessage(question);
+            return ServerResponse.createBySuccessMsg(question);
         }
         return ServerResponse.createByErrorMsg(Const.QUESTION_EMPTY);
     }
@@ -103,7 +102,7 @@ public class UserServiceImpl implements IUserService {
             //说明用户答对了
             String forgotToken = UUID.randomUUID().toString();
             TokenCache.setKey(Const.TOKEN_KEY_PREFIX + username, forgotToken);
-            return ServerResponse.createBySuccessMessage(forgotToken);
+            return ServerResponse.createBySuccessMsg(forgotToken);
         }
         //用户没答对
         return ServerResponse.createByErrorMsg(Const.ANSWER_WRONG);
@@ -135,7 +134,7 @@ public class UserServiceImpl implements IUserService {
         int rowCount = mUserMapper.updatePasswordByUsername(username, passwordMD5);
         if (rowCount > 0) {
             //生效行数大于0即更新成功
-            return ServerResponse.createBySuccessMessage(Const.PWD_RESET_SUCCESS);
+            return ServerResponse.createBySuccessMsg(Const.PWD_RESET_SUCCESS);
         }
         return ServerResponse.createByErrorMsg(Const.PWD_RESET_FAILED);
     }
@@ -150,7 +149,7 @@ public class UserServiceImpl implements IUserService {
         user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
         result = mUserMapper.updateByPrimaryKeySelective(user);
         if (result > 0) {
-            return ServerResponse.createBySuccessMessage(Const.PWD_RESET_SUCCESS);
+            return ServerResponse.createBySuccessMsg(Const.PWD_RESET_SUCCESS);
         }
         return ServerResponse.createByErrorMsg(Const.PWD_RESET_FAILED);
     }
