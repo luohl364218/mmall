@@ -7,7 +7,6 @@ import com.mmall.pojo.Product;
 import com.mmall.pojo.User;
 import com.mmall.service.IProductService;
 import com.mmall.service.IUserService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -118,7 +117,32 @@ public class ProductManageController {
         if (iUserService.checkAdminRole(user).isSuccessful()) {
             //是管理员
             //执行操作
-            return iProductService.manageProductList(pageNum, pageSize);
+            return iProductService.getProductList(pageNum, pageSize);
+        }else {
+            return ServerResponse.createByErrorMsg(Const.USER_NOT_ADMIN);
+        }
+    }
+
+    /**  
+     * 商品搜索
+     * @author heylinlook 
+     * @date 2018/4/18 22:26
+     * @param  productName 对商品名进行模糊搜索
+     * @param  productId 商品ID
+     * @return   
+     */ 
+    @RequestMapping("search.do")
+    @ResponseBody
+    public ServerResponse productSearch(HttpSession session, String productName, Integer productId, @RequestParam(value = "pageNum",defaultValue = "1") Integer pageNum,@RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize){
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), Const.USER_NO_LOGIN);
+        }
+        //检验一下是否是管理员
+        if (iUserService.checkAdminRole(user).isSuccessful()) {
+            //是管理员
+            //执行操作
+            return iProductService.searchProduct(productName, productId, pageNum, pageSize);
         }else {
             return ServerResponse.createByErrorMsg(Const.USER_NOT_ADMIN);
         }

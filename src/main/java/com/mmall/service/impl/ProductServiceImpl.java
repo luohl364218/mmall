@@ -83,7 +83,7 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccess(productDetailVo);
     }
 
-    public ServerResponse manageProductList(Integer pageNum, Integer pageSize) {
+    public ServerResponse<PageInfo> getProductList(Integer pageNum, Integer pageSize) {
         //使用mybatis的pageHelper
         //startPage---start
         //填充自己的sql查询逻辑
@@ -99,6 +99,49 @@ public class ProductServiceImpl implements IProductService {
         return ServerResponse.createBySuccess(pageResult);
     }
 
+    public ServerResponse<PageInfo> searchProduct(String productName, Integer productId, Integer pageNum, Integer pageSize) {
+        //使用mybatis的pageHelper
+        //startPage---start
+        //填充自己的sql查询逻辑
+        //pageHelper---收尾
+        PageHelper.startPage(pageNum, pageSize);
+        if (StringUtils.isNotBlank(productName)){
+            //MYSQL中以 %作为通配符，表示0到任意多个任意字符  %productName% 这样就可以用like进行模糊搜索
+            productName = new StringBuilder().append("%").append(productName).append("%").toString();
+        }
+
+        List<Product> products = productMapper.selectListByProductNameAndProductId(productName, productId);
+        List<ProductListVo> productListVoList = new ArrayList<>();
+        for (Product product : products) {
+            productListVoList.add(assembleProductListVo(product));
+        }
+        PageInfo pageResult = new PageInfo(products);
+        pageResult.setList(productListVoList);
+        return ServerResponse.createBySuccess(pageResult);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**  
+     * 填充返回商品列表的VO
+     * @author heylinlook 
+     * @date 2018/4/18 22:00  
+     * @param   
+     * @return   
+     */ 
     private ProductListVo assembleProductListVo(Product product) {
         ProductListVo productListVo = new ProductListVo();
         productListVo.setId(product.getId());
@@ -114,6 +157,13 @@ public class ProductServiceImpl implements IProductService {
         return productListVo;
     }
 
+    /**  
+     * 填充返回商品详情的VO
+     * @author heylinlook 
+     * @date 2018/4/18 22:00
+     * @param   
+     * @return   
+     */ 
     private ProductDetailVo assembleProductDetailVo(Product product) {
         ProductDetailVo productDetailVo = new ProductDetailVo();
 
