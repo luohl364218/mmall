@@ -1,5 +1,6 @@
 package com.mmall.util;
 
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,23 +25,19 @@ public class PropertiesUtil {
         }
     }
 
-    public static String getProperty(String key){
+    public static String getProperty(String key) {
         String value = props.getProperty(key.trim());
-        if(StringUtils.isBlank(value)){
+        if(StringUtils.isBlank(value)) {
             return null;
         }
         return value.trim();
     }
 
-    public static String getProperty(String key,String defaultValue){
-
+    public static String getProperty(String key, String defaultValue) {
         String value = props.getProperty(key.trim());
-        if(StringUtils.isBlank(value)){
+        if(StringUtils.isBlank(value)) {
             value = defaultValue;
         }
         return value.trim();
     }
-
-
-
 }
