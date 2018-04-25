@@ -34,6 +34,8 @@ public class Const {
     public static final String UPDATE_FAILED = "更新失败";
     public static final String CATEGORY_NOT_FIND = "未找到当前分类的子分类";
     public static final String PRODUCT_NOT_EXIST = "产品已经删除或下架";
+    public static final String UPLOAD_FAILED = "上传文件失败";
+    public static final String UPLOAD_SUCCESS = "上传文件成功";
 
     public static final String USERNAME_TYPE = "username";
     public static final String EMAIL_TYPE = "email";
