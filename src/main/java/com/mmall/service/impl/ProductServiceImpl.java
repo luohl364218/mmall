@@ -180,6 +180,8 @@ public class ProductServiceImpl implements IProductService {
         if (StringUtils.isNotBlank(keyword)) {
             keyword = new StringBuilder().append("%").append(keyword).append("%").toString();
         }
+        //开始分页
+        PageHelper.startPage(pageNum, pageSize);
         //排序处理
         if (StringUtils.isNotBlank(orderBy)) {
             //按照价格排序

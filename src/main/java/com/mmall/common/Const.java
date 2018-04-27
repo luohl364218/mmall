@@ -45,6 +45,14 @@ public class Const {
 
     public static final String TOKEN_KEY_PREFIX = "token_";
 
+    public static final String ADDRESS_ADD_SUCCESS = "新建地址成功";
+    public static final String ADDRESS_ADD_FAILED = "新建地址失败";
+    public static final String ADDRESS_DEL_SUCCESS = "删除地址成功";
+    public static final String ADDRESS_DEL_FAILED = "删除地址失败";
+    public static final String SELECT_FAILED = "查询结果为空";
+    public static final String SELECT_SUCCESS = "查询成功";
+    public static final String SHIPPING_ADD_RESULT_KET = "shippingId";
+
     public interface Role{
         int ROLE_CUSTOMER = 0; //普通用户
         int ROLE_ADMIN = 1;    //管理员
