@@ -9,6 +9,7 @@ import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IOrderService;
 import com.mmall.util.PropertiesUtil;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,13 @@ public class OrderController {
         return iOrderService.pay(orderNo, user.getId(), path);
     }
 
+    /**  
+     * 支付宝回调函数
+     * @author heylinlook
+     * @date 2018/5/5 23:11  
+     * @param   
+     * @return   
+     */ 
     @RequestMapping("alipay_callback.do")
     @ResponseBody
     public Object alipayCallback(HttpServletRequest request) {
@@ -92,6 +100,25 @@ public class OrderController {
             return Const.AlipayCallback.RESPONSE_SUCCESS;
         }
         return Const.AlipayCallback.RESPONSE_FAIED;
+    }
+
+    /**  
+     * 供前端轮询订单状态
+     * @author heylinlook
+     * @date 2018/5/5 23:26  
+     * @param   
+     * @return   
+     */ 
+    @RequestMapping("query_order_pay_status.do")
+    @ResponseBody
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+
+        return iOrderService.queryOrderPayStatus(user.getId(), orderNo).isSuccessful() ?
+                ServerResponse.createBySuccess(true) : ServerResponse.createBySuccess(false);
     }
 
 }
