@@ -42,6 +42,19 @@ import java.util.Map;
 public class OrderServiceImpl implements IOrderService {
 
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
+    private static  AlipayTradeService tradeService;
+    static {
+
+        /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
+         *  Configs会读取classpath下的zfbinfo.properties文件配置信息，如果找不到该文件则确认该文件是否在classpath目录
+         */
+        Configs.init("zfbinfo.properties");
+
+        /** 使用Configs提供的默认参数
+         *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
+         */
+        tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
+    }
 
     @Autowired
     private OrderMapper orderMapper;
@@ -115,16 +128,6 @@ public class OrderServiceImpl implements IOrderService {
                 .setTimeoutExpress(timeoutExpress)
                 .setNotifyUrl(PropertiesUtil.getProperty("alipay.callback.url"))//支付宝服务器主动通知商户服务器里指定的页面http路径,根据需要设置
                 .setGoodsDetailList(goodsDetailList);
-
-        /** 一定要在创建AlipayTradeService之前调用Configs.init()设置默认参数
-         *  Configs会读取classpath下的zfbinfo.properties文件配置信息，如果找不到该文件则确认该文件是否在classpath目录
-         */
-        Configs.init("zfbinfo.properties");
-
-        /** 使用Configs提供的默认参数
-         *  AlipayTradeService可以使用单例或者为静态成员对象，不需要反复new
-         */
-        AlipayTradeService tradeService = new AlipayTradeServiceImpl.ClientBuilder().build();
 
         AlipayF2FPrecreateResult result = tradeService.tradePrecreate(builder);
         switch (result.getTradeStatus()) {
