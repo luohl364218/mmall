@@ -39,6 +39,8 @@ public class Const {
     public static final String PRODUCT_NOT_EXIST = "产品已经删除或下架";
     public static final String UPLOAD_FAILED = "上传文件失败";
     public static final String UPLOAD_SUCCESS = "上传文件成功";
+    public static final String ORDER_NOT_EXIST = "用户没有该订单";
+
 
     public static final String USERNAME_TYPE = "username";
     public static final String EMAIL_TYPE = "email";
