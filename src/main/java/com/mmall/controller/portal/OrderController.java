@@ -86,8 +86,12 @@ public class OrderController {
         // 有的时候，一个商户可能有多个seller_id/seller_email），上述有任何一个验证不通过，
         // 则表明本次通知是异常通知，务必忽略。
 
-
-
+        //业务代码
+        ServerResponse response = iOrderService.aliCallback(params);
+        if (response.isSuccessful()) {
+            return Const.AlipayCallback.RESPONSE_SUCCESS;
+        }
+        return Const.AlipayCallback.RESPONSE_FAIED;
     }
 
 }
