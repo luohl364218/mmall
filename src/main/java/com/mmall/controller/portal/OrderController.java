@@ -71,6 +71,23 @@ public class OrderController {
     }
 
     /**  
+     * 获取订单的商品信息
+     * @author heylinlook 
+     * @date 2018/5/7 19:54
+     * @param   
+     * @return   
+     */ 
+    @RequestMapping("get_order_cart_product.do")
+    @ResponseBody
+    public ServerResponse getOrderCartProduct(HttpSession session) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderCartProduct(user.getId());
+    }
+
+    /**  
      * 订单调用支付宝支付方法，生成支付二维码
      * @author heylinlook 
      * @date 2018/5/5 16:37  
