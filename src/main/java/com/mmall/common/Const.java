@@ -39,6 +39,7 @@ public class Const {
     public static final String UPLOAD_FAILED = "上传文件失败";
     public static final String UPLOAD_SUCCESS = "上传文件成功";
     public static final String ORDER_NOT_EXIST = "用户没有该订单";
+    public static final String ORDER_ALREADY_PAY = "订单已支付，无法取消";
     public static final String VERIFY_FAILED = "验证失败";
     public static final String UNDER_STOCK_PRE = "产品";
     public static final String UNDER_STOCK_SUF = "库存不足";
