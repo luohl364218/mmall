@@ -36,6 +36,13 @@ public class OrderController {
     @Autowired
     private IOrderService iOrderService;
 
+    /**  
+     * 创建订单的函数
+     * @author heylinlook 
+     * @date 2018/5/7 17:34  
+     * @param   
+     * @return   
+     */ 
     @RequestMapping("create.do")
     @ResponseBody
     public ServerResponse create(HttpSession session, Integer shippingId) {
@@ -43,13 +50,8 @@ public class OrderController {
         if (user == null) {
             return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
-        //todo
-        return ServerResponse.createBySuccess();
+        return iOrderService.createOrder(user.getId(), shippingId);
     }
-
-
-
-
 
     /**  
      * 订单调用支付宝支付方法，生成支付二维码

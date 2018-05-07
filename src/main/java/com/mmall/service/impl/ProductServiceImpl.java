@@ -144,7 +144,7 @@ public class ProductServiceImpl implements IProductService {
             return ServerResponse.createByErrorCodeMsg(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
 
         Product product = productMapper.selectByPrimaryKey(productId);
-        if (product == null || product.getStatus() != Const.ProductStatus.ON_SALE.getCode()) {
+        if (product == null || product.getStatus() != Const.ProductStatusEnum.ON_SALE.getCode()) {
             return ServerResponse.createByErrorMsg(Const.PRODUCT_NOT_EXIST);
         }
         ProductDetailVo productDetailVo = assembleProductDetailVo(product);

@@ -1,7 +1,6 @@
 package com.mmall.common;
 
 import com.google.common.collect.Sets;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Set;
 
@@ -73,12 +72,12 @@ public class Const {
         String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
     }
 
-    public enum ProductStatus {
+    public enum ProductStatusEnum {
         ON_SALE(1, "在售");
 
         int code;
         String status;
-        ProductStatus(int code, String status) {
+        ProductStatusEnum(int code, String status) {
             this.code = code;
             this.status = status;
         }
@@ -87,6 +86,15 @@ public class Const {
         }
         public String getStatus() {
             return status;
+        }
+
+        public static ProductStatusEnum codeOf(int code) {
+            for (ProductStatusEnum typeEnum : values()) {
+                if (typeEnum.code == code) {
+                    return typeEnum;
+                }
+            }
+            throw  new RuntimeException("未找到对应类型");
         }
     }
 
@@ -116,6 +124,15 @@ public class Const {
 
         public int getCode() {
             return code;
+        }
+
+        public static OrderStatusEnum codeOf(int code) {
+            for (OrderStatusEnum typeEnum : values()) {
+                if (typeEnum.code == code) {
+                    return typeEnum;
+                }
+            }
+            throw  new RuntimeException("未找到对应类型");
         }
     }
 
@@ -162,6 +179,15 @@ public class Const {
 
         public int getCode() {
             return code;
+        }
+
+        public static PaymentTypeEnum codeOf(int code) {
+            for (PaymentTypeEnum typeEnum : values()) {
+                if (typeEnum.code == code) {
+                    return typeEnum;
+                }
+            }
+            throw  new RuntimeException("未找到对应类型");
         }
     }
 }
