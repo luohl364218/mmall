@@ -41,6 +41,11 @@ public class Const {
     public static final String UPLOAD_SUCCESS = "上传文件成功";
     public static final String ORDER_NOT_EXIST = "用户没有该订单";
     public static final String VERIFY_FAILED = "验证失败";
+    public static final String UNDER_STOCK_PRE = "产品";
+    public static final String UNDER_STOCK_SUF = "库存不足";
+    public static final String GENERATE_ORDER_ERR = "生成订单错误";
+    public static final String CART_EMPTY = "购物车为空";
+    public static final String ORDER_EMPTY = "订单为空";
 
     public static final String USERNAME_TYPE = "username";
     public static final String EMAIL_TYPE = "email";
@@ -128,6 +133,25 @@ public class Const {
         private String value;
         private int code;
         PayPlatformEnum(int code, String value) {
+            this.value = value;
+            this.code = code;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public int getCode() {
+            return code;
+        }
+    }
+
+    public enum PaymentTypeEnum {
+        ONLINE_PAY(0, "在线支付");
+
+        private String value;
+        private int code;
+        PaymentTypeEnum(int code, String value) {
             this.value = value;
             this.code = code;
         }

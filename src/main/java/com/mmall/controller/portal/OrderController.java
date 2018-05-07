@@ -36,6 +36,21 @@ public class OrderController {
     @Autowired
     private IOrderService iOrderService;
 
+    @RequestMapping("create.do")
+    @ResponseBody
+    public ServerResponse create(HttpSession session, Integer shippingId) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        //todo
+        return ServerResponse.createBySuccess();
+    }
+
+
+
+
+
     /**  
      * 订单调用支付宝支付方法，生成支付二维码
      * @author heylinlook 

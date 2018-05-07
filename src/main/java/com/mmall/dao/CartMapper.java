@@ -50,4 +50,13 @@ public interface CartMapper {
      * @return   
      */ 
     int selectCartProductCount(@Param("userId")Integer userId);
+
+    /**  
+     * 返回购物车中所有勾选中的商品信息
+     * @author heylinlook
+     * @date 2018/5/7 10:42  
+     * @param   
+     * @return   
+     */ 
+    List<Cart> selectCheckedCartByUserId(Integer userId);
 }

@@ -13,18 +13,17 @@ import com.alipay.demo.trade.utils.ZxingUtils;
 import com.google.common.collect.Lists;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
-import com.mmall.dao.OrderItemMapper;
-import com.mmall.dao.OrderMapper;
-import com.mmall.dao.PayInfoMapper;
-import com.mmall.pojo.Order;
-import com.mmall.pojo.OrderItem;
-import com.mmall.pojo.PayInfo;
+import com.mmall.dao.*;
+import com.mmall.pojo.*;
 import com.mmall.service.IOrderService;
 import com.mmall.util.BigDecimalUtil;
 import com.mmall.util.DateTimeUtil;
 import com.mmall.util.FTPUtil;
 import com.mmall.util.PropertiesUtil;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.weaver.ast.Or;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +32,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 /*
  * introductions:
@@ -66,6 +63,134 @@ public class OrderServiceImpl implements IOrderService {
     private OrderItemMapper orderItemMapper;
     @Autowired
     private PayInfoMapper payInfoMapper;
+    @Autowired
+    private CartMapper cartMapper;
+    @Autowired
+    private ProductMapper productMapper;
+
+    public ServerResponse createOrder(Integer userId, Integer shippingId) {
+        //从购物车中获取数据
+        List<Cart> cartList = cartMapper.selectCheckedCartByUserId(userId);
+        //计算订单总价
+        ServerResponse serverResponse = this.getCartOrderItem(userId, cartList);
+        if (!serverResponse.isSuccessful()) {
+            return serverResponse;
+        }
+        List<OrderItem> orderItemList = (List<OrderItem>) serverResponse.getData();
+        //判断订单是否为空
+        if (CollectionUtils.isEmpty(orderItemList)) {
+            return ServerResponse.createByErrorMsg(Const.ORDER_EMPTY);
+        }
+        //计算总价
+        BigDecimal payment = this.getOrderTotalPrice(orderItemList);
+        //生成订单
+        Order order = this.assembleOrder(userId, shippingId, payment);
+        if (order == null) {
+            return ServerResponse.createByErrorMsg(Const.GENERATE_ORDER_ERR);
+        }
+        //为订单明细设置订单号
+        for (OrderItem orderItem : orderItemList) {
+            orderItem.setOrderNo(order.getOrderNo());
+        }
+        //todo mybatis  批量插入
+
+        return ServerResponse.createBySuccess();
+    }
+
+    /**  
+     * 组装订单
+     * @author heylinlook 
+     * @date 2018/5/7 11:46
+     * @param   
+     * @return   
+     */ 
+    private Order assembleOrder(Integer userId, Integer shippingId, BigDecimal payment) {
+        long orderNo = this.generateOrderNo();
+        Order order = new Order();
+        order.setOrderNo(orderNo);
+        order.setStatus(Const.OrderStatusEnum.NO_PAY.getCode());
+        order.setPayment(payment);
+        order.setUserId(userId);
+        order.setShippingId(shippingId);
+        order.setPostage(0);
+        order.setPaymentType(Const.PaymentTypeEnum.ONLINE_PAY.getCode());
+        //发货时间——发货时修改
+        //付款时间——付款时添加
+        int rowCount = orderMapper.insert(order);
+        if (rowCount > 0) {
+            return order;
+        }
+        return null;
+    }
+    
+    /**  
+     * 生成订单号  V1.0
+     * @author heylinlook 
+     * @date 2018/5/7 11:46  
+     * @param   
+     * @return   
+     */ 
+    private long generateOrderNo() {
+        long orderNo = System.currentTimeMillis();
+        //V1.0 有问题 并发时容易出现重复订单号
+        //return orderNo + orderNo % 10;
+        //V1.1 有问题 不过增强了并发能力
+        return orderNo + new Random().nextInt(100);
+    }
+
+    /**  
+     * 根据订单明细获取订单总价
+     * @author heylinlook 
+     * @date 2018/5/7 11:18  
+     * @param   
+     * @return   
+     */ 
+    private BigDecimal getOrderTotalPrice(List<OrderItem> orderItems) {
+        BigDecimal payment = new BigDecimal("0");
+        for (OrderItem orderItem : orderItems) {
+            //Attention: 这边容易出错，不更新，要注意
+            payment = BigDecimalUtil.add(payment.doubleValue(), orderItem.getTotalPrice().doubleValue());
+        }
+        return payment;
+    }
+
+    /**  
+     * 将购物车对象转为子订单明细
+     * @author heylinlook 
+     * @date 2018/5/7 11:13  
+     * @param   
+     * @return   
+     */ 
+    private ServerResponse getCartOrderItem(Integer userId, List<Cart> cartList) {
+        List<OrderItem> orderItemList = Lists.newArrayList();
+        //判断购物车是否为空
+        if (CollectionUtils.isEmpty(cartList)) {
+            return ServerResponse.createByErrorMsg(Const.CART_EMPTY);
+        }
+        //遍历购物车中的数据
+        for (Cart cart : cartList) {
+            Product product = productMapper.selectByPrimaryKey(cart.getProductId());
+            //产品状态判断
+            if (product == null || Const.ProductStatus.ON_SALE.getCode() != product.getStatus()) {
+                return ServerResponse.createByErrorMsg(Const.PRODUCT_NOT_EXIST);
+            }
+            //产品库存状态判断
+            if (product.getStock() < cart.getQuantity()) {
+                return ServerResponse.createByErrorMsg(Const.UNDER_STOCK_PRE + product.getId() + Const.UNDER_STOCK_SUF);
+            }
+            //填充订单项
+            OrderItem item = new OrderItem();
+            item.setUserId(userId);
+            item.setProductId(product.getId());
+            item.setProductImage(product.getMainImage());
+            item.setProductName(product.getName());
+            item.setQuantity(cart.getQuantity());
+            item.setCurrentUnitPrice(product.getPrice());
+            item.setTotalPrice(BigDecimalUtil.mul(product.getPrice().doubleValue(), cart.getQuantity()));
+            orderItemList.add(item);
+        }
+        return ServerResponse.createBySuccess(orderItemList);
+    }
 
     public ServerResponse pay(Long orderNo, Integer userId, String path) {
         Map<String, String> resultMap = new HashMap<>();
