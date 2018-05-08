@@ -561,7 +561,8 @@ public class OrderServiceImpl implements IOrderService {
         for (Order order : orderList) {
             List<OrderItem> orderItemList = new ArrayList<>();
             if (userId == null) {
-                //todo 管理员查看订单列表，无需传入userId
+                //管理员查看订单列表，无需传入userId
+                orderItemList = orderItemMapper.selectByOrderNo(order.getOrderNo());
             }else {
                 orderItemList = orderItemMapper.selectByOrderNoUserId(order.getOrderNo(), userId);
             }
@@ -569,5 +570,26 @@ public class OrderServiceImpl implements IOrderService {
             orderVoList.add(orderVo);
         }
         return orderVoList;
+    }
+
+    //backend
+
+    public ServerResponse<PageInfo> manageList(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectAllOrder();
+        List<OrderVo> orderVoList = this.assembleOrderVoList(orderList, null);
+        PageInfo pageInfo = new PageInfo(orderList);
+        pageInfo.setList(orderVoList);
+        return ServerResponse.createBySuccess(pageInfo);
+    }
+
+    public ServerResponse<OrderVo> manageDetail(Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            return ServerResponse.createByErrorMsg(Const.ORDER_NOT_EXIST);
+        }
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
+        OrderVo orderVo = assembleOrderVo(order, orderItemList);
+        return ServerResponse.createBySuccess(orderVo);
     }
 }

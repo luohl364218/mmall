@@ -27,4 +27,8 @@ public interface IOrderService {
     ServerResponse<OrderVo> getOrderDetail(Integer userId, Long orderNo);
 
     ServerResponse<PageInfo> getOrderList(Integer userId, Integer pageNum, Integer pageSize);
+
+    ServerResponse<PageInfo> manageList(Integer pageNum, Integer pageSize);
+
+    ServerResponse<OrderVo> manageDetail(Long orderNo);
 }
