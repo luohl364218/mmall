@@ -533,4 +533,15 @@ public class OrderServiceImpl implements IOrderService {
 
         return ServerResponse.createBySuccess(orderProductVo);
     }
+
+    public ServerResponse<OrderVo> getOrderDetail(Integer userId, Long orderNo) {
+        Order order = orderMapper.selectByUserIdAndOrderNo(userId, orderNo);
+        if (order == null) {
+            return ServerResponse.createByErrorMsg(Const.ORDER_NOT_EXIST);
+        }
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNoUserId(orderNo, userId);
+        //返回给前端数据 填充VO数据
+        OrderVo orderVo = assembleOrderVo(order, orderItemList);
+        return ServerResponse.createBySuccess(orderVo);
+    }
 }

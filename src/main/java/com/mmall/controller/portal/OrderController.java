@@ -88,6 +88,23 @@ public class OrderController {
     }
 
     /**  
+     * 查看订单详情
+     * @author heylinlook 
+     * @date 2018/5/8 10:10  
+     * @param   
+     * @return   
+     */ 
+    @RequestMapping("detail.do")
+    @ResponseBody
+    public ServerResponse detail(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
+        }
+        return iOrderService.getOrderDetail(user.getId(), orderNo);
+    }
+
+    /**  
      * 订单调用支付宝支付方法，生成支付二维码
      * @author heylinlook 
      * @date 2018/5/5 16:37  
