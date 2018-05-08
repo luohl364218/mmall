@@ -39,6 +39,7 @@ public class Const {
     public static final String UPLOAD_FAILED = "上传文件失败";
     public static final String UPLOAD_SUCCESS = "上传文件成功";
     public static final String ORDER_NOT_EXIST = "用户没有该订单";
+    public static final String ORDER_STATUS_WRONG = "订单状态不符";
     public static final String ORDER_ALREADY_PAY = "订单已支付，无法取消";
     public static final String VERIFY_FAILED = "验证失败";
     public static final String UNDER_STOCK_PRE = "产品";
@@ -46,6 +47,7 @@ public class Const {
     public static final String GENERATE_ORDER_ERR = "生成订单错误";
     public static final String CART_EMPTY = "购物车为空";
     public static final String ORDER_EMPTY = "订单为空";
+    public static final String SEND_GOODS_SUCCESS = "发货成功";
 
     public static final String USERNAME_TYPE = "username";
     public static final String EMAIL_TYPE = "email";

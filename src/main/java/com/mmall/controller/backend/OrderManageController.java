@@ -105,4 +105,29 @@ public class OrderManageController {
             return ServerResponse.createByErrorMsg(Const.USER_NOT_ADMIN);
         }
     }
+
+    /**
+     * 订单后台管理员发货接口
+     * @author heylinlook
+     * @date 2018/5/8 11:53
+     * @param
+     * @return
+     */
+    @RequestMapping("send_goods.do")
+    @ResponseBody
+    public ServerResponse<String> orderSendGoods(HttpSession session, Long orderNo) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), Const.USER_NO_LOGIN);
+        }
+        //检验一下是否是管理员
+        if (iUserService.checkAdminRole(user).isSuccessful()) {
+            //是管理员
+            //执行操作
+            return iOrderService.manageSendGoods(orderNo);
+        }else {
+            return ServerResponse.createByErrorMsg(Const.USER_NOT_ADMIN);
+        }
+    }
+
 }

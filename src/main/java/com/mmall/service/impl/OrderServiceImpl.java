@@ -606,4 +606,17 @@ public class OrderServiceImpl implements IOrderService {
         pageInfo.setList(Lists.newArrayList(orderVo));
         return ServerResponse.createBySuccess(pageInfo);
     }
+
+    public ServerResponse<String> manageSendGoods(Long orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            return ServerResponse.createByErrorMsg(Const.ORDER_NOT_EXIST);
+        }
+        if (order.getStatus() != Const.OrderStatusEnum.PAID.getCode()) {
+            return ServerResponse.createByErrorMsg(Const.ORDER_STATUS_WRONG);
+        }
+        order.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
+        order.setSendTime(new Date());
+        return ServerResponse.createBySuccessMsg(Const.SEND_GOODS_SUCCESS);
+    }
 }
