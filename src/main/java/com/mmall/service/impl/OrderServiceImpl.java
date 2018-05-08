@@ -635,6 +635,7 @@ public class OrderServiceImpl implements IOrderService {
         }
         order.setStatus(Const.OrderStatusEnum.SHIPPED.getCode());
         order.setSendTime(new Date());
+        orderMapper.updateByPrimaryKeySelective(order);
         return ServerResponse.createBySuccessMsg(Const.SEND_GOODS_SUCCESS);
     }
 }
