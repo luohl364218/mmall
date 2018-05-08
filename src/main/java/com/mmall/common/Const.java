@@ -167,7 +167,7 @@ public class Const {
     }
 
     public enum PaymentTypeEnum {
-        ONLINE_PAY(0, "在线支付");
+        ONLINE_PAY(1, "在线支付");
 
         private String value;
         private int code;

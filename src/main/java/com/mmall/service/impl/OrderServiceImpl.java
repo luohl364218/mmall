@@ -132,6 +132,7 @@ public class OrderServiceImpl implements IOrderService {
         orderVo.setEndTime(DateTimeUtil.dateToStr(order.getEndTime()));
         orderVo.setOrderItemVoList(assembleOrderItemVoList(orderItemList));
         orderVo.setImageHost(PropertiesUtil.getProperty("ftp.server.http.prefix"));
+        orderVo.setShippingId(order.getShippingId());
         Shipping shipping = shippingMapper.selectByPrimaryKey(order.getShippingId());
         if (shipping != null) {
             orderVo.setReceiveName(shipping.getReceiverName());
@@ -222,6 +223,18 @@ public class OrderServiceImpl implements IOrderService {
         for (OrderItem orderItem : orderItemList) {
             Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
             product.setStock(product.getStock() - orderItem.getQuantity());
+            productMapper.updateByPrimaryKeySelective(product);
+        }
+    }
+
+    /**
+     * 订单取消成功后，增加产品库存
+     * @author heylinlook
+     */
+    private void increaseProductStock(List<OrderItem> orderItemList) {
+        for (OrderItem orderItem : orderItemList) {
+            Product product = productMapper.selectByPrimaryKey(orderItem.getProductId());
+            product.setStock(product.getStock() + orderItem.getQuantity());
             productMapper.updateByPrimaryKeySelective(product);
         }
     }
@@ -502,6 +515,11 @@ public class OrderServiceImpl implements IOrderService {
         updateOrder.setStatus(Const.OrderStatusEnum.CANCELED.getCode());
         int row = orderMapper.updateByPrimaryKeySelective(updateOrder);
         if (row > 0) {
+            //Attention!!! 取消订单，商品库存需要增加
+            List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
+            if (!CollectionUtils.isEmpty(orderItemList)) {
+                increaseProductStock(orderItemList);
+            }
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
