@@ -78,4 +78,31 @@ public class OrderManageController {
             return ServerResponse.createByErrorMsg(Const.USER_NOT_ADMIN);
         }
     }
+
+    /**  
+     * V1.0 按订单号查询
+     * 后续会引入模糊查询等
+     * @author heylinlook 
+     * @date 2018/5/8 11:40
+     * @param   
+     * @return   
+     */ 
+    @RequestMapping("search.do")
+    @ResponseBody
+    public ServerResponse<PageInfo> orderSearch(HttpSession session, Long orderNo,
+                                               @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                               @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if(user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), Const.USER_NO_LOGIN);
+        }
+        //检验一下是否是管理员
+        if (iUserService.checkAdminRole(user).isSuccessful()) {
+            //是管理员
+            //执行操作
+            return iOrderService.manageSearch(orderNo, pageNum, pageSize);
+        }else {
+            return ServerResponse.createByErrorMsg(Const.USER_NOT_ADMIN);
+        }
+    }
 }

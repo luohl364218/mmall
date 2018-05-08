@@ -592,4 +592,18 @@ public class OrderServiceImpl implements IOrderService {
         OrderVo orderVo = assembleOrderVo(order, orderItemList);
         return ServerResponse.createBySuccess(orderVo);
     }
+
+    //V1.0 按照精确查询 在后续版本中将加入其它查询功能
+    public ServerResponse<PageInfo> manageSearch(Long orderNo, Integer pageNo, Integer pageSize) {
+        PageHelper.startPage(pageNo, pageSize);
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if (order == null) {
+            return ServerResponse.createByErrorMsg(Const.ORDER_NOT_EXIST);
+        }
+        List<OrderItem> orderItemList = orderItemMapper.selectByOrderNo(orderNo);
+        OrderVo orderVo = assembleOrderVo(order, orderItemList);
+        PageInfo pageInfo = new PageInfo(Lists.newArrayList(order));
+        pageInfo.setList(Lists.newArrayList(orderVo));
+        return ServerResponse.createBySuccess(pageInfo);
+    }
 }
