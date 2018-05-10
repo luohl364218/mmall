@@ -26,6 +26,13 @@ public class CategoryManageController {
     @Autowired
     private ICategoryService iCategoryService;
 
+    /**  
+     * 添加分类
+     * @author heylinlook 
+     * @date 2018/5/10 15:47  
+     * @param   
+     * @return   
+     */ 
     @RequestMapping("add_category.do")
     @ResponseBody
     public ServerResponse addCategory(HttpSession session, String categoryName, @RequestParam(value = "parentId", defaultValue = "0") int parentId) {
@@ -43,6 +50,13 @@ public class CategoryManageController {
         }
     }
 
+    /**  
+     * 设置分类名
+     * @author heylinlook 
+     * @date 2018/5/10 15:47
+     * @param   
+     * @return   
+     */ 
     @RequestMapping("set_category_name.do")
     @ResponseBody
     public ServerResponse updateCategoryName(HttpSession session, Integer categoryId, String categoryName) {
@@ -84,6 +98,13 @@ public class CategoryManageController {
         }
     }
 
+    /**  
+     * 递归获取所有分类
+     * @author heylinlook 
+     * @date 2018/5/10 15:46
+     * @param   
+     * @return   
+     */ 
     @RequestMapping("get_deep_category.do")
     @ResponseBody
     public ServerResponse getDeepChildrenCategory(HttpSession session,@RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
