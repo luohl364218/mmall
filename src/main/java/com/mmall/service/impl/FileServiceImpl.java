@@ -44,7 +44,8 @@ public class FileServiceImpl implements IFileService{
             //已经上传到FTP服务器上
             targetFile.delete();
         } catch (IOException e) {
-            logger.error("上传文件异常", e);
+            logger.error("上传文件异常",e);
+            return null;
         }
         return targetFile.getName();
     }
